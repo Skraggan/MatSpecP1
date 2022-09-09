@@ -3,24 +3,30 @@ import numpy as np
 from operator import add
 FONTSIZE = 24
 
+def plot_lemniskata(origo):
+    tim.color("blue")
+    tim.penup()
+    tim.goto(calc_function(-2, origo, "(a*np.cos(t))/(1+(np.sin(t)**2)", "(a*np.cos(t)*np.sin(t))/(1+(np.sin(t)**2))"))
 
-def calc_ellipse(t, origo):
+def plot_hyperbel(origo):
+    pass
+
+def plot_parable(origo):
     """
-    Paramater: Ett tal och en tupel (koordinat)
-    Returnerar: En koordinat
-    Kommentar: Returkoordinaterna ligger på en ellips
+    Parameter: En tupel (koordinat), som anger centrum för parabeln
+    Returnerar: Inget
+    Kommentar: Proceduren ritar parabeln, koordinater beräknas i
+    funktionen calc_function
     """
-    # a och b styr storlek och form på ellipsen
-    a = 100
-    b = 50
-    x = a*np.cos(t)
-    y = b*np.sin(t)
+    tim.color("Red")
+    tim.penup()
+    tim.goto(calc_function(-2, origo, "a*(t**2)", "a*t", a=50))  # Gå till första punkten på ellipsen
+    tim.pendown()
 
-    # Exempel på hur returen fungerar:
-    # Om x = 100, y = 200 och origo = (30, -50)
-    # så returneras (130, 150)
-    return list(map(add, (x, y), origo))
+    t = np.arange(-2, 2, 0.05)
 
+    for i in t:  # Ritar ellipsen
+        tim.goto(calc_function(i, origo, "a*(t**2)", "a*t", a=50))
 
 def plot_ellipse(origo):
     """
@@ -31,16 +37,29 @@ def plot_ellipse(origo):
     """
     tim.color("Red")
     tim.penup()
-    tim.goto(calc_ellipse(0, origo))  # Gå till första punkten på ellipsen
+    tim.goto(calc_function(0, origo,"a*np.cos(t)", "b*np.sin(t)", 100, 50))  # Gå till första punkten på ellipsen
     tim.pendown()
 
     # Skapar en lista med tal mellan 0 och 2*pi med avståndet 0.025, dvs
-    # 0, 0.025, 0.050, ... ,6.275
-    t = np.arange(0, 2*np.pi, 0.025)
+    # 0, 0.025, 0.050, ... , 6.275
+    t = np.arange(0, 2*np.pi, 0.1)
 
     for i in t:  # Ritar ellipsen
-        tim.goto(calc_ellipse(i, origo))
+        tim.goto(calc_function(i, origo, "a*np.cos(t)", "b*np.sin(t)", 100, 50))
 
+def calc_function(t, origo, function_x, function_y, a=100, b=50):
+    """
+    Paramater: Ett tal, en tupel (koordinat), funktion för x, funktion för y och sedan två godtyckliga tal
+    Returnerar: En koordinat
+    Kommentar: Returkoordinaterna ligger på de givna funktionerna
+    """
+    x = eval(function_x)
+    y = eval(function_y)
+
+    # Exempel på hur returen fungerar:
+    # Om x = 100, y = 200 och origo = (30, -50)
+    # så returneras (130, 150)
+    return list(map(add, (x, y), origo))
 
 def print_text(text, origo):
     """
@@ -69,5 +88,9 @@ screen.title("Några parametriska kurvor")
 origo = (-300, 150)  # Runt vilken punkt plotten ska vara centererad
 plot_ellipse(origo)  # Plottar ellipsen
 print_text("Ellips", origo)  # Skriver texten i ellipsen
+
+origo = (-100,150)
+plot_parable(origo)
+print_text("Parabel", (origo[0]+100, origo[1]))
 
 screen.exitonclick()
